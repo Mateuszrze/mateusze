@@ -2,14 +2,16 @@
 
 using namespace std;
 
+// numerujemy od 1 
+
 struct treap
 {
-      treap * left = 0,*right = 0;
+      treap * left = 0, *right = 0;
       treap * parent = 0;
-      int k;
+      int k; // wartosc w wierzchołku
       int rank;
-      int r=1;
-      bool rev=false;
+      int r = 1;
+      bool rev = false; // czy jest obrocony
 
       treap (int K = 0)
       {
@@ -53,7 +55,7 @@ inline void update(treap *t)
             t->right->parent=t;
 }
 
-treap * merge (treap *a, treap *b)
+treap * merge (treap *a, treap *b) // dokleja treapa do treapa
 {
       if(a==0)
             return b;
@@ -76,7 +78,7 @@ treap * merge (treap *a, treap *b)
 
 }
 
-pair<treap * ,treap *> split(treap *t ,int k)
+pair<treap * ,treap *> split(treap *t ,int k) // [1, k] , [k + 1, ...]
 {
       if(t==0)
             return pair<treap * ,treap *> (0,0);
@@ -102,7 +104,7 @@ pair<treap * ,treap *> split(treap *t ,int k)
 
 }
 
-treap * reverse(treap *t,int a,int b)
+treap * reverse(treap *t,int a,int b) // [1, a - 1] , [a, b] (odwrocone) , [b + 1, ...]
 {
       t->propagate();
       // b->propagate();
@@ -113,7 +115,7 @@ treap * reverse(treap *t,int a,int b)
       return merge(merge(p2.first,p2.second),p.second);
 }
 
-int nr(treap *t)
+int nr(treap *t) // ktory od lewej jest ten wierzcholek
 {
       t->propagate();
       treap * par =t->parent;
@@ -124,6 +126,16 @@ int nr(treap *t)
       return nr(par) +r(t->left)+1;
 }
 
+treap * kty(treap * t, int k) // zwraca kty treap w drzewie ktorego korzeniem jest t
+{
+      t->propagate();
+      if(r(t->left) >= k)
+            return kty(t->left, k);
+      if(r(t->left) == k - 1)
+            return t;
+      return kty(t->right, k - r(t->left) - 1);
+}
+
 void propagate_up(treap *t)
 {
       if(t == 0)
@@ -131,3 +143,5 @@ void propagate_up(treap *t)
       propagate_up(t->parent);
       t->propagate();
 }
+
+
