@@ -1,0 +1,92 @@
+
+const int pot = 1<<20;
+// val - zwraca wartosc w wierzcholku
+// suma - trzyma sume na przedziale nie uwzgledniajac mnozen i dodawan w sobie
+// mno - o ile trzeba przemnozyc u mnie
+// dod - ile trzeba dodac u mnie
+// dlu - rozmiar mojego poddrzewa
+// sum(l, p) - zwraca sume na przedziale <l, p>
+// mnoz(l, p, a) - mnozy przdzial <l, p> przez a
+// dodaj(l, p, a) - dodaje a na przedziale <l, p>
+
+struct drzewo
+{
+      LL mod;
+      VLL suma, mno, dod, dlu;
+
+      drzewo(LL MOD = 1e9 + 7)
+      {
+            mod = MOD;
+            suma.resize(2 * pot + 7, 0);
+            mno.resize(2 * pot + 7, 1);
+            dod.resize(2 * pot + 7, 0);
+            dlu.resize(2 * pot + 7, 0);
+            for(int i = pot;i < 2 * pot;i++)
+                  dlu[i] = 1;
+            for(int i = pot - 1;i > 0 ;i--)
+                  dlu[i] = dlu[ 2 * i] + dlu[2 * i + 1];
+      }
+
+      LL val(int cur)
+      {
+            return ((suma[cur] * mno[cur] ) % mod + dod[cur] * dlu[cur]) % mod;
+      }
+
+      void prop(int cur)
+      {
+            mno[2 * cur] = (mno[2 * cur] * mno[cur]) % mod;
+            dod[2 * cur] = (dod[2 * cur] * mno[cur] + dod[cur]) % mod;
+            mno[2 * cur + 1] = (mno[2 * cur + 1] * mno[cur]) % mod;
+            dod[2 * cur + 1] = (dod[2 * cur + 1] * mno[cur] + dod[cur]) % mod;
+            mno[cur] = 1;
+            dod[cur] = 0;
+      }
+
+      LL sum(int l, int p, int lewo = 0 , int prawo = pot - 1, int cur = 1)
+      {
+            if(l > prawo || p < lewo)
+                  return 0LL;
+            if(l <= lewo && prawo <= p)
+            {
+                  return val(cur);
+            }
+            prop(cur);
+            int sr = (lewo + prawo) / 2;
+            int res = (sum(l, p, lewo, sr, cur * 2) + sum(l, p, sr + 1, prawo, cur * 2 + 1) ) % mod;
+            suma[cur] = (val(2 * cur) + val(2 * cur + 1) ) % mod;
+            return res;
+      }
+
+      void mnoz(int l, int p, LL v, int lewo = 0, int prawo = pot - 1, int cur = 1)
+      {
+            if(l > prawo || p < lewo)
+                  return ;
+            if(l <= lewo && prawo <= p)
+            {
+                  dod[cur] = (dod[cur] * v) % mod;
+                  mno[cur] = (mno[cur] * v) % mod;
+                  return ;
+            }
+            prop(cur);
+            int sr = (lewo + prawo) / 2;
+            mnoz(l, p, v, lewo, sr, cur * 2);
+            mnoz(l, p, v, sr + 1, prawo, cur * 2 + 1);
+            suma[cur] = (val(2 * cur) + val(2 * cur + 1)) % mod;
+      }
+
+      void dodaj(int l, int p, LL v, int lewo = 0, int prawo = pot - 1, int cur = 1)
+      {
+            if(l > prawo || p < lewo)
+                  return ;
+            if(l <= lewo && prawo <= p)
+            {
+                  dod[cur] = (dod[cur] + v) % mod;
+                  return ;
+            }
+            prop(cur);
+            int sr = (lewo + prawo) / 2;
+            dodaj(l, p, v, lewo, sr, cur * 2);
+            dodaj(l, p, v, sr + 1, prawo, cur * 2 + 1);
+            suma[cur] = (val(2 * cur) + val(2 * cur + 1)) % mod;
+      }
+};
