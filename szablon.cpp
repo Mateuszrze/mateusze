@@ -23,15 +23,23 @@ using namespace std;
 typedef long long LL;
 typedef unsigned long long ULL;
 typedef long double LD;
+typedef pair<int, int> PII;
+typedef pair<LL, LL> PLL;
+typedef vector<int> VI;
+typedef vector<LL> VLL;
+typedef vector<PII> VPII;
+typedef vector<PLL> VPLL;
+
 const LL INF = 1e18L + 7;
 const int inf = 1e9 + 7;
 const LL mod = 1e9+7;
 const LD eps = 1e-9;
+const int maxn = 1e6 + 7;
 
-template<class TH> void _dbg(const char *sdbg, TH h){ cerr<<sdbg<<'='<<h<<endl; }
+template<class TH> void _dbg(const char *sdbg, TH h){ cerr<<sdbg<<" = "<<h<<endl; }
 template<class TH, class... TA> void _dbg(const char *sdbg, TH h, TA... a) {
   while(*sdbg!=',')cerr<<*sdbg++;
-  cerr<<'='<<h<<','; _dbg(sdbg+1, a...);
+  cerr<<" = "<<h<<','; _dbg(sdbg+1, a...);
 }
 
 int main()
@@ -44,4 +52,3 @@ int main()
 
     return 0;
 }
-
