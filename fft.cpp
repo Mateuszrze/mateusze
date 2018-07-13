@@ -7,10 +7,12 @@
 // 1<<21 double -> 170 MB
 // 1<<20 long double -> 130 MB
 // 1<<20 double -> 90 MB
+// 1e6 x 1e6 -> 2 s na double 3,5 s na long double
+// 2e6 x 2e6 -> 4 s na double
 
 namespace FFT {
       #define PI 3.14159265358979323846264338327950288419716939937510582097494459230781640628
-	const int MAX = 1 << 20;
+	const int MAX = 1 << 20; // maksymalny rozmiar wyniku (2 * maksymalny rozmiar wejscia)
 
 	typedef complex<double> comp; // można zmienić na long double
 
@@ -58,31 +60,31 @@ namespace FFT {
 
 		for(int i = 0;i < 2 * len; i++)c[i] = round(z1[i].real());
 	}
+}
 
+const int MAX = 1<<20; // rozmiar wyniku (2 * dlugosc na wejsciu)
 
-	void mult_mod(LL *a, LL *b, LL *c, int len, int mod)
-	{
-		static LL a0[MAX], a1[MAX];
-		static LL b0[MAX], b1[MAX];
-		static LL c0[MAX], c1[MAX], c2[MAX];
+void mult_mod(LL *a, LL *b, LL *c, int len, int mod)
+{
+	static LL a0[MAX], a1[MAX];
+	static LL b0[MAX], b1[MAX];
+	static LL c0[MAX], c1[MAX], c2[MAX];
 
-		for(int i = 0; i < len; i++) a0[i] = a[i] & 0xFFFF;
-		for(int i = 0; i < len; i++) a1[i] = a[i] >> 16;
+	for(int i = 0; i < len; i++) a0[i] = a[i] & 0xFFFF;
+	for(int i = 0; i < len; i++) a1[i] = a[i] >> 16;
 
-		for(int i = 0; i < len; i++) b0[i] = b[i] & 0xFFFF;
-		for(int i = 0; i < len; i++) b1[i] = b[i] >> 16;
+	for(int i = 0; i < len; i++) b0[i] = b[i] & 0xFFFF;
+	for(int i = 0; i < len; i++) b1[i] = b[i] >> 16;
 
-		FFT::mult(a0, b0, c0, len);
-		FFT::mult(a1, b1, c2, len);
+	FFT::mult(a0, b0, c0, len);
+	FFT::mult(a1, b1, c2, len);
 
-		for(int i = 0; i < len; i++) a0[i] += a1[i];
-		for(int i = 0; i < len; i++) b0[i] += b1[i];
-		FFT::mult(a0, b0, c1, len);
-		for(int i = 0; i < 2 * len; i++) c1[i] -= c0[i] + c2[i];
+	for(int i = 0; i < len; i++) a0[i] += a1[i];
+	for(int i = 0; i < len; i++) b0[i] += b1[i];
+	FFT::mult(a0, b0, c1, len);
+	for(int i = 0; i < 2 * len; i++) c1[i] -= c0[i] + c2[i];
 
-		for(int i = 0; i < 2 * len; i++) c1[i] %= mod;
-		for(int i = 0; i < 2 * len; i++) c2[i] %= mod;
-		for(int i = 0; i < 2 * len; i++) c[i] = (c0[i] + (c1[i] << 16) + (c2[i] << 32)) % mod;
-	}
-
+	for(int i = 0; i < 2 * len; i++) c1[i] %= mod;
+	for(int i = 0; i < 2 * len; i++) c2[i] %= mod;
+	for(int i = 0; i < 2 * len; i++) c[i] = (c0[i] + (c1[i] << 16) + (c2[i] << 32)) % mod;
 }
