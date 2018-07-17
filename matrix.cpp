@@ -3,6 +3,9 @@ const int mod = 1000000007;
 const int MN = 105;
 
 
+//MN - rozmiar
+//prz - liczba na przekatnej
+
 struct matrix
 {
 	LL V[MN][MN];
