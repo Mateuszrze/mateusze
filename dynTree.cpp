@@ -7,6 +7,8 @@ struct Node
 	LL suma = 0LL;
 };
 
+//root, pocz pytania, kon pytania, pocz wierzcholka, kon wierzcholka
+
 LL ask(Node * cur, int a, int b, int p = 0, int k = P2 - 1)
 {
 	if(a == p && b == k)
@@ -19,6 +21,8 @@ LL ask(Node * cur, int a, int b, int p = 0, int k = P2 - 1)
 		ret += ask(cur->prawy, max(a, mid + 1), b, mid + 1, k);
 	return ret;
 }
+
+//root, pozycja, wartosc, pocz wierzcholka, kon wierzcholka
 
 void add(Node * cur, int x, int v, int p = 0, int k = P2 - 1)
 {
