@@ -11,6 +11,18 @@ vector < int > G[MN];
 
 int N;
 
+MFMC(int _n)
+{
+	N = _n;
+	for(int i = 1; i <= N; ++i)
+	{
+		jest[i] = 0;
+		G[i].clear();
+		for(int j = 1; j <= N; ++j)
+			K[i][j] = F[i][j] = C[i][j] = 0;
+	}
+}
+
 void add_edge(int a, int b, int c, int f)
 {
 	G[a].pb(b);
@@ -74,7 +86,7 @@ int flow(int s, int t)
 	for(int i = 1; i <= N; ++i)
 		for(int j = 1; j <= N; ++j)
 			if(F[i][j] > 0)
-				res += koszt[i][j];
+				res += K[i][j];
 	return res;
 }
 
