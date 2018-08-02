@@ -1,3 +1,7 @@
+// moze dzialac n logn 
+// trzeba usunac usuwanie multikrawedzi w grafie silnie spojnych i bedzie liniowo 
+
+
 /*
 numerujemy wierzcholki od 0
 SS to vector o rozmiarze rownym liczbe sss 
