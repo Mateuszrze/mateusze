@@ -9,7 +9,7 @@ bool gora(point a)
 	return 0;
 }
 
-LL wyz(point a, point b, point c) // wzraca wyznacznik 
+LD wyz(point a, point b, point c) // wzraca wyznacznik 
 {
 	b -= a;
 	c -= a;
@@ -26,7 +26,7 @@ int wyzznak(point a, point b, point c) // zwraca znak wyznacznika
 	return -1;
 }
 
-LL skalar(point a, point b) // iloczn skalarny
+LD skalar(point a, point b) // iloczn skalarny
 {
 	return a.x * b.x + a.y * b.y;
 }
@@ -61,7 +61,7 @@ struct line
 // punktprzeciecia dwoch prostych
 point inter(line a, line b)
 {
-	if((a.a * b.b - a.b * b.a) < eps)// uwaga na to //////////////////////////////////////
+	if(fabs(a.a * b.b - a.b * b.a) < eps)// uwaga na to //////////////////////////////////////
 		return {1e18, 1e18}; // te proste sie nie przecinaja
-	return {(b.b * a.c - a.b * b.c ) / (b.a * a.b - a.a - b.b), (b.a * a.c - a.a * b.c) / (a.a * b.b - b.a * a.b)};
+	return {(b.b * a.c - a.b * b.c ) / (b.a * a.b - a.a * b.b), (b.a * a.c - a.a * b.c) / (a.a * b.b - b.a * a.b)};
 }
