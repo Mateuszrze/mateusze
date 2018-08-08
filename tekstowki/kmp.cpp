@@ -11,7 +11,7 @@ struct kmp
 			while(p >= 0 && S[i] != S[p])
 				p = P[p];
 			++p;
-			P[i + 1] = p;
+			P[i] = p;
 		}
 	}
 };
