@@ -1,4 +1,6 @@
 // jest wersja trwala i zwykla
+// jak chcesz cos dodac do trwalej do add_per
+// jak chcesz cos dodac do zwyklej to add
 
 const int roz = 60; // 2 ^ roz - maksymalny rozmiar liczby
 
@@ -65,6 +67,9 @@ void add(node * cur, LL liczba) // daje zwykle (nie trwale)
 	}
 	cur->ile++;
 }
+
+// tego nie wywolywac - to sie robi inna funkcja
+// funkacja add_per wywoluje dod
 
 node * dod(node * cur, int poz) // robi trwale
 {
