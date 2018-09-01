@@ -55,6 +55,8 @@ struct segtree
 
 };
 
+// tutaj sie zaczyna wlasciwe hld
+
 struct hld
 {
       vector< vector<int> > wek, V; // wek - wektor ktory robi graf
@@ -136,6 +138,7 @@ struct hld
                   for(auto s : V[i])
                         pos[s] = cnt++;
             }
+            // tutaj trzeba ustawic wartosci startowe
             for(int i = 1; i <= n;i++)
                   for(auto s : G[i])
                         if(s.fi == f[i])
@@ -171,6 +174,7 @@ struct hld
             }
             if(deep[a] > deep[b])
                   swap(a, b);
+            // jezeli chcemy takze wziac wartosc w lca trzeba dac (pos[a], pos[b]);
             res = max(res, drze.maxi(pos[a] + 1, pos[b])); // tutaj uzupelniamy to co jest na sciezce na ktorej teraz lezy a i b - uzupelniamy odcinek  ( pozycja a, pozycja b >
             return res;
       }
