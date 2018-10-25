@@ -1,4 +1,1 @@
-CXX=g++
-CXXFLAGS= -O2 -std=c++11 -DLOCAL -Wunused-parameter \
-		-Wall -Wshadow -Wextra -Wno-unused-result \
-		-Wno-char-subscripts -Wfloat-equal
+CXXFLAGS= -std=c++14 -Wall -Wextra -Wunused -O2 -Wno-unused-result -Wshadow -DLOCAL -D_GLIBCXX_DEBUG -Wfloat-equal -fsanitize=address -fsanitize=undefined
