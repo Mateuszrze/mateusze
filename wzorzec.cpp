@@ -19,9 +19,9 @@ int main()
     cout.tie(0);
 #ifndef LOCAL
   // to co ma sie dziac na sprawdzarce
-#elseif
+#else
   // to co ma sie dziac u nas
- #endif
+#endif
 
     return 0;
 }
