@@ -1,7 +1,7 @@
 #include<bits/stdc++.h>
 
-#define all(v) (v).begin(), (v).end()
-#define sz(v) (int)((v).size())
+#define ALL(v) (v).begin(), (v).end()
+#define SZ(v) (int)((v).size())
 #define pb push_back
 #define fi first
 #define se second
