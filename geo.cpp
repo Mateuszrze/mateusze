@@ -1,100 +1,246 @@
-#define point complex<LD>
-#define x real()
-#define y imag()
+//~ while (clock()<=69*CLOCKS_PER_SEC)
+//~ #pragma comment(linker, "/stack:200000000")
+//~ #pragma GCC optimize("O3")
+//~ #pragma GCC optimize("Ofast")
+//~ #pragma GCC target("sse,sse2,sse3,ssse3,sse4,popcnt,abm,mmx,avx,tune=native")
+//~ #pragma GCC optimize("unroll-loops")
+#include<bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
 
-bool gora(point a)
-{
-	if(a.y > eps || (a.y >= eps && a.x >= eps))
-		return 1;
-	return 0;
+#define pb push_back
+#define SZ(x) ((int)(x).size())
+#define ALL(x) x.begin(),x.end()
+#define all(x) x.begin(),x.end()
+#define fi first
+#define se second
+#define _upgrade ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+#define erase_duplicates(x) sort(all(x)); (x).resize(distance((x).begin(), unique(all(x))));
+
+
+using namespace std;
+using namespace __gnu_pbds;
+template<typename T>
+using ordered_set = tree<
+T,
+null_type,
+less<T>,
+rb_tree_tag,
+tree_order_statistics_node_update>;
+
+//X.find_by_order(k); - zwraca iterator na k-ty element (numeracja od zerowego)
+//X.order_of_key(k); - zwraca liczbę elementów ostro mniejszych niż k
+
+typedef long long LL;
+typedef pair<int,int> PII;
+typedef pair<LL,LL> PLL;
+typedef vector<PII> VPII;
+typedef vector<PLL> VPLL;
+typedef vector<LL> VLL;
+typedef vector<int> VI;
+typedef vector<string> VS;
+typedef vector<char> VC;
+typedef long double LD;
+typedef pair<LD,LD> PLD;
+typedef vector<LD> VLD;
+typedef vector<PLD> VPLD;
+
+template<class TH> void _dbg(const char *sdbg, TH h){ cerr<<sdbg<<" = "<<h<<endl; }
+template<class TH, class... TA> void _dbg(const char *sdbg, TH h, TA... a) {
+  while(*sdbg!=',')cerr<<*sdbg++;
+  cerr<<" = "<<h<<", "; _dbg(sdbg+1, a...);
 }
 
-LD wyz(point a, point b, point c) // wzraca wyznacznik 
+#ifdef LOCAL
+#define dbg(...) _dbg(#__VA_ARGS__, __VA_ARGS__)
+#else
+#define dbg(...)
+#define cerr if(0)cout
+#endif
+
+const int maxn = (1e6)+7;
+const int maxk = 20;
+const int inf = (1e9)+7;
+const LL LLinf = ((LL)1e18)+7LL;
+const LD eps = 1e-9;
+const LL mod = 1e9+7;
+
+// ***************************** CODE ***************************** //
+
+typedef long long D;
+const LD PI = acos(-1);
+
+struct point
 {
-	b -= a;
-	c -= a;
-	return b.x * c.y - b.y * c.x;
+  D x, y;
+  point(D X = (D)0,D Y = (D)0) : x(X), y(Y){}
+  point operator-(point & a){return point(x - a.x, y - a.y);}
+  point operator+(point & a){return point(x + a.x, y + a.y);}
+  point operator+=(point & a){x += a.x; y += a.y; return *this;}
+  point operator-=(point & a){x -= a.x; y -= a.y; return *this;}
+  LD kat(){return atan2(y, x);}
+  LD kat_dodatni(){LD res = atan2(y, x); if(res < -eps) res += 2.0 * PI; return res;}
+  LD dist(point a){return sqrt((x - a.x) * (x - a.x) + (y - a.y) * (y - a.y));}
+  point operator*(LD val){return point(x * val, y * val);}
+};
+
+// zwraca kat skierowany miedzy wektorami a oraz b (od a do b)
+
+LD kat(point a, point b)
+{
+  LD res = b.kat() - a.kat();
+  if(res < -eps)
+    res += 2 * PI;
+  return res;
 }
 
-int wyzznak(point a, point b, point c) // zwraca znak wyznacznika
+// zwraca iloczyn wektorowy
+D wyz(point a, point b, point c)
 {
-	LL res = wyz(a, b, c);
-	if(res > 0)
-		return 1;
-	if(res == 0)
-		return 0;
-	return -1;
+  b -= a;
+  c -= a;
+  return b.x * c.y - b.y * c.x;
 }
 
-LD skalar(point a, point b) // iloczn skalarny
+// zwraca znak iloczynu wektorowego
+int wyzznak(point a, point b, point c)
 {
-	return a.x * b.x + a.y * b.y;
+  D res = wyz(a, b, c);
+  if(res > 0)
+    return 1;
+  if(res < 0)
+    return -1;
+  return 0;
 }
 
-bool angcomp(point & a, point & b) // komparator do sortowania katowego
+// zwraca pole wielokata (mozliwe ze wkleslego)
+LD pole(vector<point> V)
 {
-	if(gora(a) != gora(b))
-		return gora(b) < gora(a);
-	return wyzznak(point(0, 0), a, b) == 1; 
+  D res = (D)0;
+  V.pb(V[0]);
+  for(int i = 0;i + 1 < SZ(V);i++)
+    res += wyz(point(0, 0),V[i], V[i + 1]);
+  return abs(res / (LD)2.0);
 }
 
 struct line
 {
-	LD a, b, c;
-	
-	line(LD A, LD B, LD C)
-	{
-		a = A;
-		b = B;
-		c = C;
-	}
-	
-	line(point A, point B)
-	{
-		a = A.y - B.y;
-		b = B.x - A.x;
-		c = A.y * (A.x - B.x) + (B.y - A.y) * A.x;
-	}
-
+  D A, B, C;
+  line(D a, D b, D c) : A(a), B(b), C(c){}
+  line(){A = B = C = (D) 0;}
+  line(point a, point b, bool f = 0) // f = 0 - prosta ma przechodzic przez punkty a i b, f = 1 - prosta ma postac a + t * b dla t rzeczywitego
+  {
+    if(f == 0)
+    {
+      B = b.x - a.x;
+      A = a.y - b.y;
+      C = a.y * (a.x - b.x) + a.x * (b.y - a.y);
+    }
+    else
+    {
+      A = b.x;
+      B = b.y;
+      C = -(a.x * b.x + a.y * b.y);
+    }
+  }
+  // zwraca dwa punkty lezace na prostej
+  pair<point, point> punkty()
+  {
+    if(fabs(A) < eps)
+      return {point((D)0, -C / B), point((D)1, -(C + A) / B)};
+    return {point(-C / A, (D)0), point(-(C + B) / A, (D)1)};
+  }
 };
 
-// punktprzeciecia dwoch prostych
+// odleglosc punktu a od prostej b
+LD dist(point a, line b)
+{
+  return abs((b.A * a.x + b.B * a.y + b.C) / (LD)sqrt(b.A * b.A + b.B * b.B));
+}
+
+//odleglosc punktu p od odcinka o koncach w a oraz b
+
+// punkt przeciecia dwoch prostych
 point inter(line a, line b)
 {
-	if(fabs(a.a * b.b - a.b * b.a) < eps)// uwaga na to //////////////////////////////////////
-		return {1e18, 1e18}; // te proste sie nie przecinaja
-	return {(b.b * a.c - a.b * b.c ) / (b.a * a.b - a.a * b.b), (b.a * a.c - a.a * b.c) / (a.a * b.b - b.a * a.b)};
+	if(fabs(a.A * b.B - a.B * b.A) < eps)// uwaga na to //////////////////////////////////////
+		return {(D)1e18, (D)1e18}; // te proste sie nie przecinaja
+	return point((b.B * a.C - a.B * b.C ) / (LD)(b.A * a.B - a.A * b.B), (b.A * a.C - a.A * b.C) / (LD)(a.A * b.B - b.A * a.B));
 }
 
-bool com(point a, point b)
+// rzut punktu a na prosta b
+point rzut(point a, line b)
 {
-	if(a.x != b.x)
-		return a.x < b.x;
-	return a.y < b.y;
+  line dwa(-b.B, b.A, b.B * a.x - a.y * b.A);
+  return inter(b, dwa);
 }
 
-// zwraca otoczke wypukla zbioru punktow cur
-// uwaga na zmiennoprzecinkowe 
-
-vector<point> rob(vector<point> cur)
+//odleglosc punktu p od odcinka a, b
+LD point_segment_dist(point p, point a, point b)
 {
-	sort(all(cur), com);
-	vector<point> oto;
-	for(auto s : cur)
-	{
-		while(SZ(oto) >= 2 && wyzznak(oto[SZ(oto) - 2], oto.back(), s) <= 0)
-			oto.pop_back();
-		oto.push_back(s);
-	}
-	reverse(all(cur));
-	vector<point> oto2;
-	for(auto s : cur)
-	{
-		while(SZ(oto2) >= 2 && wyzznak(oto2[SZ(oto2) - 2], oto2.back(), s) <= 0)
-			oto2.pop_back();
-		oto2.push_back(s);
-	}
-	for(int i = 1; i < SZ(oto2) - 1;i++)
-		oto.pb(oto2[i]);	
-	return oto;
+  point cnt = rzut(p, line(a, b));
+  if(fabs(cnt.dist(a) + cnt.dist(b) - a.dist(b)) < eps)
+    return dist(p, line(a, b));
+  return min(p.dist(a), p.dist(b));
+}
+
+//odleglosc punktu p od polprostej o rownaniu a + t * b dla t >= 0
+LD point_halfline_dist(point p, point a, point b)
+{
+  LD cnt = point_segment_dist(p, a, b);
+  if(p.dist(a) > p.dist(b))
+    return dist(p, line(a, b));
+  return cnt;
+}
+
+//czy odcinki a, b oraz c, d sie przecinaja
+bool przecinanie(point a, point b, point c, point d)
+{
+  int A = wyzznak(a, c, d);
+  int B = wyzznak(b, c, d);
+  int C = wyzznak(c, a, b);
+  int DD = wyzznak(d, a, b);
+  return ((A != B || A == 0) && (C != DD || C == 0));
+}
+
+// najmniejsza odleglosc miedzy punktem z odinka a, b oraz odcinka c, d
+LD segment_segment_dist(point a, point b, point c, point d)
+{
+  if(przecinanie(a, b, c, d))
+    return (LD) 0.0;
+  LD res = a.dist(c);
+  for(auto s : {a, b})
+    for(auto v : {c, d})
+      res = min(res, s.dist(v));
+  res = min(res, point_segment_dist(a, c, d));
+  res = min(res, point_segment_dist(b, c, d));
+  res = min(res, point_segment_dist(c, a, b));
+  res = min(res, point_segment_dist(d, a, b));
+  return res;
+}
+
+// zwraca dwie proste obie sa odlegle o dokladnie R od a
+pair<line, line> line_dist(line a, LD R)
+{
+  point xd = a.punkty().fi;
+  line cnt(a.A, a.B, R * sqrt(a.A * a.A + a.B * a.B) - a.A * xd.x - a.B * xd.y);
+  line cnt2(cnt.A, cnt.B, -R * sqrt(a.A * a.A + a.B * a.B) - a.A * xd.x - a.B * xd.y);
+  return {cnt, cnt2};
+}
+
+// odleglosc miedzy polprosta a + t * b oraz c + r * d, dla t, r >= 0
+LD halfseg_halfseg_dist(point a, point b, point c, point d)
+{
+  LD res = point_halfline_dist(a, c, d);
+  res = min(res, point_halfline_dist(c, a, b));
+  point e = inter(line(a, b), line(c, d));
+  if(point_halfline_dist(e, a, b) < eps && point_halfline_dist(e, c, d) < eps)
+    return (LD) 0.0;
+  return res;
+}
+
+int main()
+{
+	_upgrade
+  return 0;
 }
